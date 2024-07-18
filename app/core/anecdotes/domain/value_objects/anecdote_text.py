@@ -1,4 +1,4 @@
-from core.anecdotes.domain.exceptions import MinLengthAnecdoteError, MaxLengthAnecdoteError
+from app.core.anecdotes.domain.exceptions import MinLengthAnecdoteError, MaxLengthAnecdoteError
 
 
 class AnecdoteText:

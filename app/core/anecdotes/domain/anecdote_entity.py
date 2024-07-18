@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
-from core.anecdotes.domain.value_objects.anecdote_author import AnecdoteAuthor
-from core.anecdotes.domain.value_objects.anecdote_text import AnecdoteText
-from core.anecdotes.domain.value_objects.likes_count import LikesCount
-from core.shared_kernel.domain.value_objects import AnecdoteUUID, UserUUID
+from app.core.anecdotes.domain.value_objects.anecdote_author import AnecdoteAuthor
+from app.core.anecdotes.domain.value_objects.anecdote_text import AnecdoteText
+from app.core.anecdotes.domain.value_objects.likes_count import LikesCount
+from app.core.shared_kernel.domain.value_objects import AnecdoteUUID, UserUUID
 
 
 @dataclass

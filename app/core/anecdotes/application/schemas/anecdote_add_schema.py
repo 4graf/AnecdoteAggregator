@@ -2,7 +2,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from core.anecdotes.application.schemas.author_info_schema import AuthorInfoSchema
+from app.core.anecdotes.application.schemas.author_info_schema import AuthorInfoSchema
 
 
 class AnecdoteAddSchema(BaseModel):

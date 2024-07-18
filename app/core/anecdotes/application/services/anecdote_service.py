@@ -1,13 +1,14 @@
 from uuid import uuid4, UUID
 
-from core.anecdotes.application.schemas.anecdote_add_schema import AnecdoteAddSchema
-from core.anecdotes.application.schemas.anecdote_read_schema import AnecdoteReadSchema
-from core.anecdotes.domain.anecdote_entity import Anecdote
-from core.anecdotes.domain.anecdote_repository import AnecdoteRepository
-from core.anecdotes.domain.value_objects.anecdote_author import AnecdoteAuthor
-from core.anecdotes.domain.value_objects.anecdote_text import AnecdoteText
-from core.anecdotes.domain.value_objects.likes_count import LikesCount
-from core.shared_kernel.domain.value_objects import AnecdoteUUID, UserUUID
+from app.core.anecdotes.application.schemas.anecdote_add_schema import AnecdoteAddSchema
+from app.core.anecdotes.application.schemas.anecdote_read_schema import AnecdoteReadSchema
+from app.core.anecdotes.domain.anecdote_entity import Anecdote
+from app.core.anecdotes.domain.anecdote_repository import AnecdoteRepository
+from app.core.anecdotes.domain.exceptions import AnecdoteNotFoundError
+from app.core.anecdotes.domain.value_objects.anecdote_author import AnecdoteAuthor
+from app.core.anecdotes.domain.value_objects.anecdote_text import AnecdoteText
+from app.core.anecdotes.domain.value_objects.likes_count import LikesCount
+from app.core.shared_kernel.domain.value_objects import AnecdoteUUID, UserUUID
 
 
 class AnecdoteService(...):

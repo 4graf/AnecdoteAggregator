@@ -2,8 +2,8 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from core.anecdotes.application.schemas.author_info_schema import AuthorInfoSchema
-from core.anecdotes.domain.anecdote_entity import Anecdote
+from app.core.anecdotes.application.schemas.author_info_schema import AuthorInfoSchema
+from app.core.anecdotes.domain.anecdote_entity import Anecdote
 
 
 class AnecdoteReadSchema(BaseModel):

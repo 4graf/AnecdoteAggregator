@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from core.anecdotes.domain.value_objects.anecdote_author import AnecdoteAuthor
+from app.core.anecdotes.domain.value_objects.anecdote_author import AnecdoteAuthor
 
 
 class AuthorInfoSchema(BaseModel):

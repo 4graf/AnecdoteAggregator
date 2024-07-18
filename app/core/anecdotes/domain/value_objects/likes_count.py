@@ -1,4 +1,4 @@
-from core.anecdotes.domain.exceptions import NegativeLikesCountError
+from app.core.anecdotes.domain.exceptions import NegativeLikesCountError
 
 
 class LikesCount:

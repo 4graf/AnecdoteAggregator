@@ -3,8 +3,8 @@ from uuid import UUID
 from sqlalchemy import String, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.anecdotes.domain.anecdote_entity import Anecdote
-from core.shared_kernel.db.dao import BaseDao
+from app.core.anecdotes.domain.anecdote_entity import Anecdote
+from app.core.shared_kernel.db.dao import BaseDao
 
 
 class AnecdoteDao(BaseDao):

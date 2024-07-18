@@ -1,12 +1,11 @@
-from abc import ABC
-from typing import TypeVar, Generic, Sequence, Any
+from typing import TypeVar, Generic, Sequence
 from uuid import UUID
 
 from sqlalchemy import insert, update, select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.shared_kernel.domain.repository import BaseRepository
+from app.core.shared_kernel.domain.repository import BaseRepository
 
 Entity = TypeVar('Entity')
 Dao = TypeVar('Dao')

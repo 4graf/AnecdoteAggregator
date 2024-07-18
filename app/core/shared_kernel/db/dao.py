@@ -2,7 +2,7 @@ from abc import abstractmethod, ABC
 
 from sqlalchemy.orm import DeclarativeBase
 
-from core.shared_kernel.domain.entity import BaseEntity
+from app.core.shared_kernel.domain.entity import BaseEntity
 
 
 class BaseDao(ABC, DeclarativeBase):

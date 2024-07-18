@@ -1,4 +1,4 @@
-from core.anecdotes.domain.exceptions import MaxLengthAnecdoteAuthorFirstNameError, \
+from app.core.anecdotes.domain.exceptions import MaxLengthAnecdoteAuthorFirstNameError, \
     MaxLengthAnecdoteAuthorSecondNameError
 
 
