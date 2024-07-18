@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from core.shared_kernel.value_objects import AnecdoteUUID, UserUUID
+from core.shared_kernel.domain.value_objects import AnecdoteUUID, UserUUID
 
 
 @dataclass
