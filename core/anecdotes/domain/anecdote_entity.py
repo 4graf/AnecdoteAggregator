@@ -1,35 +1,23 @@
 from dataclasses import dataclass
-from uuid import UUID
 
-
-# Перенести в отдельный модуль?
-class AnecdoteText:
-    ...
-
-
-class AnecdoteAuthor:
-    ...
-
-
-class LikesCount:
-    ...
+from core.anecdotes.domain.value_objects.anecdote_author import AnecdoteAuthor
+from core.anecdotes.domain.value_objects.anecdote_text import AnecdoteText
+from core.anecdotes.domain.value_objects.likes_count import LikesCount
+from core.shared_kernel.value_objects import AnecdoteUUID, UserUUID
 
 
 @dataclass
 class Anecdote:
-    uuid: UUID
+    uuid: AnecdoteUUID
     text: AnecdoteText
     author: AnecdoteAuthor
+    user_id: UserUUID
     likes_count: LikesCount
-    # like_status: LikeStatus
 
-    # up like, down like?
     def like(self) -> "Anecdote":
-        # if like_status != LikeStatus.not_liked
         likes_count = LikesCount(self.likes_count.count + 1)
         return self
 
     def cancel_like(self) -> "Anecdote":
-        # if like_status != LikeStatus.liked
         likes_count = LikesCount(self.likes_count.count - 1)
         return self
