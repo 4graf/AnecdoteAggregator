@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from pydantic import BaseModel
 
 from app.core.anecdotes.application.schemas.author_info_schema import AuthorInfoSchema
@@ -7,5 +5,4 @@ from app.core.anecdotes.application.schemas.author_info_schema import AuthorInfo
 
 class AnecdoteAddSchema(BaseModel):
     text: str
-    user_id: UUID
     author: AuthorInfoSchema | None

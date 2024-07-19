@@ -16,16 +16,16 @@ class AnecdoteService(...):
 
     """
 
-    # Or __init__ ?
-    anecdote_repository: AnecdoteRepository
+    def __init__(self, anecdote_repository: AnecdoteRepository):
+        self.anecdote_repository = anecdote_repository
 
-    async def add_anecdote(self, data: AnecdoteAddSchema) -> AnecdoteReadSchema:
+    async def add_anecdote(self, data: AnecdoteAddSchema, user_id: UUID) -> AnecdoteReadSchema:
         anecdote = Anecdote(
             uuid=AnecdoteUUID(uuid4()),
             text=AnecdoteText(data.text),
             author=AnecdoteAuthor(first_name=data.author.first_name,
                                   second_name=data.author.second_name),
-            user_id=UserUUID(data.user_id),
+            user_id=UserUUID(user_id),
             likes_count=LikesCount(0)
         )
         await self.anecdote_repository.add(anecdote)
