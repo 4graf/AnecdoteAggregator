@@ -6,11 +6,13 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 from starlette import status
+from starlette.exceptions import HTTPException
 
 from app.api.anecdotes.dependencies import get_anecdote_service
 from app.core.anecdote.application.schemas.anecdote_add_schema import AnecdoteAddSchema
 from app.core.anecdote.application.schemas.anecdote_read_schema import AnecdoteReadSchema
 from app.core.anecdote.application.services.anecdote_service import AnecdoteService
+from app.core.anecdote.domain.exceptions import AnecdoteNotFoundError
 
 anecdote_router = APIRouter()
 
@@ -54,8 +56,10 @@ async def get_anecdote(anecdote_id: UUID,
         :param anecdote_service: Сервис для работы с анекдотами.
         :return: Данные анекдота.
     """
-    # try:
-    return await anecdote_service.get_anecdote_by_id(anecdote_id)
-    # except UserNotFoundException as exc:
-    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-    #                         detail=str(exc)) from exc
+    try:
+        anecdote = await anecdote_service.get_anecdote_by_id(anecdote_id)
+    except AnecdoteNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=str(exc)) from exc
+
+    return anecdote
