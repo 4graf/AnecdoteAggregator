@@ -15,7 +15,7 @@ from app.core.anecdote.application.services.anecdote_service import AnecdoteServ
 anecdote_router = APIRouter()
 
 
-@anecdote_router.post("/add", status_code=status.HTTP_200_OK)
+@anecdote_router.post("/add", status_code=status.HTTP_201_CREATED)
 async def add_anecdote(anecdote: AnecdoteAddSchema,
                        # user: ...,
                        anecdote_service: Annotated[AnecdoteService, Depends(get_anecdote_service)]) \
@@ -43,7 +43,7 @@ async def get_anecdotes(anecdote_service: Annotated[AnecdoteService, Depends(get
     return await anecdote_service.get_all_anecdotes()
 
 
-@anecdote_router.get("/{user_id}", status_code=status.HTTP_200_OK)
+@anecdote_router.get("/{anecdote_id}", status_code=status.HTTP_200_OK)
 async def get_anecdote(anecdote_id: UUID,
                        anecdote_service: Annotated[AnecdoteService, Depends(get_anecdote_service)]) \
         -> AnecdoteReadSchema:
