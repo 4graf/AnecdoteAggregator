@@ -5,7 +5,7 @@ from sqlalchemy.orm import DeclarativeBase
 from app.core.shared_kernel.domain.entity import BaseEntity
 
 
-class BaseDao(ABC, DeclarativeBase):
+class BaseDao(DeclarativeBase):
     """
     Базовая модель для SQLAlchemy моделей.
     """
