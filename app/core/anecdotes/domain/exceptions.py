@@ -1,5 +1,5 @@
 class AnecdoteError(Exception):
-    """Базовое исключение для пользователей"""
+    """Базовое исключение для анекдотов"""
 
 
 class MaxLengthAnecdoteAuthorFirstNameError(AnecdoteError):
@@ -22,7 +22,7 @@ class MinLengthAnecdoteError(AnecdoteError):
 
 class MaxLengthAnecdoteError(AnecdoteError):
 
-    def __init__(self, msg='Anecdote has a length grater than the maximum.'):
+    def __init__(self, msg='Anecdote has a length greater than the maximum.'):
         super().__init__(msg)
 
 
