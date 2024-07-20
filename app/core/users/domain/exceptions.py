@@ -31,3 +31,8 @@ class IncorrectEmailError(UserError):
     def __init__(self, msg='Email was written with an error.'):
         super().__init__(msg)
 
+
+class UserNotFoundError(UserError):
+
+    def __init__(self, msg='User not found.'):
+        super().__init__(msg)

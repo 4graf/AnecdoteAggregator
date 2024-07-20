@@ -2,6 +2,7 @@ from uuid import uuid4, UUID
 
 from app.core.anecdotes.application.schemas.anecdote_add_schema import AnecdoteAddSchema
 from app.core.anecdotes.application.schemas.anecdote_read_schema import AnecdoteReadSchema
+from app.core.anecdotes.application.schemas.anecdote_update_schema import AnecdoteUpdateSchema
 from app.core.anecdotes.domain.anecdote_entity import Anecdote
 from app.core.anecdotes.domain.anecdote_repository import AnecdoteRepository
 from app.core.anecdotes.domain.exceptions import AnecdoteNotFoundError
@@ -11,7 +12,7 @@ from app.core.anecdotes.domain.value_objects.likes_count import LikesCount
 from app.core.shared_kernel.domain.value_objects import AnecdoteUUID, UserUUID
 
 
-class AnecdoteService(...):
+class AnecdoteService:
     """
 
     """
@@ -20,11 +21,16 @@ class AnecdoteService(...):
         self.anecdote_repository = anecdote_repository
 
     async def add_anecdote(self, data: AnecdoteAddSchema, user_id: UUID) -> AnecdoteReadSchema:
+        if data.author:
+            anecdote_author = AnecdoteAuthor(first_name=data.author.first_name,
+                                             second_name=data.author.second_name)
+        else:
+            anecdote_author = None
+
         anecdote = Anecdote(
             uuid=AnecdoteUUID(uuid4()),
             text=AnecdoteText(data.text),
-            author=AnecdoteAuthor(first_name=data.author.first_name,
-                                  second_name=data.author.second_name),
+            author=anecdote_author,
             user_id=UserUUID(user_id),
             likes_count=LikesCount(0)
         )
@@ -40,3 +46,20 @@ class AnecdoteService(...):
     async def get_all_anecdotes(self) -> list[AnecdoteReadSchema]:
         all_anecdotes = await self.anecdote_repository.get_all()
         return [AnecdoteReadSchema.from_entity(anecdote) for anecdote in all_anecdotes]
+
+    async def update_anecdote(self, data: AnecdoteUpdateSchema) -> AnecdoteReadSchema:
+        if data.author:
+            anecdote_author = AnecdoteAuthor(first_name=data.author.first_name,
+                                             second_name=data.author.second_name)
+        else:
+            anecdote_author = None
+
+        anecdote = Anecdote(
+            uuid=AnecdoteUUID(data.uuid),
+            text=AnecdoteText(data.text),
+            author=anecdote_author,
+            user_id=UserUUID(data.user_id),
+            likes_count=LikesCount(data.likes_count)
+        )
+        await self.anecdote_repository.update(anecdote)
+        return AnecdoteReadSchema.from_entity(anecdote)

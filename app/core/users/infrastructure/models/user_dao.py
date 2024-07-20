@@ -16,9 +16,9 @@ class UserDao(BaseDao):
     __tablename__ = 'user'
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
-    login: Mapped[str] = mapped_column(String)
+    login: Mapped[str] = mapped_column(String, unique=True)
     password_hash: Mapped[str] = mapped_column(String)
-    email: Mapped[str] = mapped_column(String)
+    email: Mapped[str] = mapped_column(String, unique=True)
     first_name: Mapped[str] = mapped_column(String)
     second_name: Mapped[str] = mapped_column(String)
 
