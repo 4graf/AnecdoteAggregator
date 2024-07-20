@@ -6,56 +6,58 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 from starlette import status
+from starlette.exceptions import HTTPException
 
-from app.api.anecdotes.dependencies import get_anecdote_service
-from app.core.anecdote.application.schemas.anecdote_add_schema import AnecdoteAddSchema
-from app.core.anecdote.application.schemas.anecdote_read_schema import AnecdoteReadSchema
-from app.core.anecdote.application.services.anecdote_service import AnecdoteService
+from app.api.users.dependencies import get_user_service
+from app.core.user.application.schemas.user_read_schema import UserReadSchema
+from app.core.user.application.schemas.user_register_schema import UserRegisterSchema
+from app.core.user.application.services.user_service import UserService
+from app.core.user.domain.exceptions import UserNotFoundError
 
 anecdote_router = APIRouter()
 
 
-@anecdote_router.post("/add", status_code=status.HTTP_200_OK)
-async def add_anecdote(anecdote: AnecdoteAddSchema,
-                       # user: ...,
-                       anecdote_service: Annotated[AnecdoteService, Depends(get_anecdote_service)]) \
-        -> AnecdoteReadSchema:
+@anecdote_router.post("/register", status_code=status.HTTP_201_CREATED)
+async def register_user(user: UserRegisterSchema,
+                        user_service: Annotated[UserService, Depends(get_user_service)]) \
+        -> UserReadSchema:
     """
-    Создаёт новый анекдот
+    Регистрирует нового пользователя
 
-        :param anecdote: Данные нового анекдота.
-        :param anecdote_service: Сервис для работы с анекдотами.
-        :return: Данные анекдота.
+        :param user: Данные нового пользователя.
+        :param user_service: Сервис для работы с пользователями.
+        :return: Данные пользователя.
     """
-    user_id = ...
-    return await anecdote_service.add_anecdote(data=anecdote, user_id=user_id)
+    return await user_service.register_user(data=user)
 
 
 @anecdote_router.get("/all", status_code=status.HTTP_200_OK)
-async def get_anecdotes(anecdote_service: Annotated[AnecdoteService, Depends(get_anecdote_service)]) \
-        -> list[AnecdoteReadSchema]:
+async def get_users(user_service: Annotated[UserService, Depends(get_user_service)]) \
+        -> list[UserReadSchema]:
     """
-    Получает все анекдоты
+    Получает всех пользователей
 
-        :param anecdote_service: Сервис для работы с анекдотами.
-        :return: Данные анекдотов.
+        :param user_service: Сервис для работы с пользователями.
+        :return: Данные пользователя.
     """
-    return await anecdote_service.get_all_anecdotes()
+    return await user_service.get_all_user()
 
 
 @anecdote_router.get("/{user_id}", status_code=status.HTTP_200_OK)
-async def get_anecdote(anecdote_id: UUID,
-                       anecdote_service: Annotated[AnecdoteService, Depends(get_anecdote_service)]) \
-        -> AnecdoteReadSchema:
+async def get_user(user_id: UUID,
+                   user_service: Annotated[UserService, Depends(get_user_service)]) \
+        -> UserReadSchema:
     """
-    Получает анекдот по его идентификатору
+    Получает пользователя по его идентификатору
 
-        :param anecdote_id: Идентификатор анекдота.
-        :param anecdote_service: Сервис для работы с анекдотами.
-        :return: Данные анекдота.
+        :param user_id: Идентификатор пользователя.
+        :param user_service: Сервис для работы с пользователями.
+        :return: Данные пользователя.
     """
-    # try:
-    return await anecdote_service.get_anecdote_by_id(anecdote_id)
-    # except UserNotFoundException as exc:
-    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-    #                         detail=str(exc)) from exc
+    try:
+        user = await user_service.get_user_by_id(user_id)
+    except UserNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=str(exc)) from exc
+
+    return user
