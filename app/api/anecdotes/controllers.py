@@ -29,7 +29,8 @@ async def add_anecdote(anecdote: AnecdoteAddSchema,
         :param anecdote_service: Сервис для работы с анекдотами.
         :return: Данные анекдота.
     """
-    user_id = ...
+    user_id = UUID("7605739b-0340-4d3f-aa11-bbc93610dfdd")
+    # user_id = ...
     return await anecdote_service.add_anecdote(data=anecdote, user_id=user_id)
 
 

@@ -41,5 +41,5 @@ class AnecdoteDao(BaseDao):
             text=anecdote.text.text,
             author_first_name=anecdote.author.first_name,
             author_second_name=anecdote.author.second_name,
-            likes_count=anecdote.likes_count
+            likes_count=anecdote.likes_count.count
         )
