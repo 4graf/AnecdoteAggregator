@@ -1,40 +1,47 @@
-from typing import TypeVar, Generic, Sequence
+from abc import ABC, abstractmethod
+from typing import Sequence, TypeVar
 from uuid import UUID
 
 from sqlalchemy import insert, update, select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.shared_kernel.db.dao import BaseDao
+from app.core.shared_kernel.domain.entity import BaseEntity
 from app.core.shared_kernel.domain.repository import BaseRepository
 
-Entity = TypeVar('Entity')
-Dao = TypeVar('Dao')
+Entity = TypeVar("Entity", bound=BaseEntity)
 
 
-class BaseDBRepository(BaseRepository[Entity], Generic[Entity, Dao]):
+class BaseDBRepository(BaseRepository[Entity], ABC):
+
+    @property
+    @abstractmethod
+    def dao(self) -> type[BaseDao]:
+        ...
+    
     def __init__(self, session: AsyncSession):
         self.session = session
 
     async def add(self, entity: Entity | list[Entity]) -> Entity | Sequence[Entity]:
+        add_dao = self.dao.from_entity(entity)
         stmt = (
-            insert(Dao)
-            .values(entity)
-            .returning(Dao)
+            insert(self.dao)
+            .values(add_dao.to_dict())
+            .returning(self.dao)
         )
-
         result = await self.session.execute(stmt)
         result = result.scalars().all()
         await self.session.commit()
         return result[0].to_entity() if len(result) == 1 else [dao.to_entity() for dao in result]
 
     async def update(self, entity: Entity) -> Entity:
-        update_data = Dao.from_entity(entity)
+        update_dao = self.dao.from_entity(entity)
         stmt = (
-            update(Dao)
-            .values(update_data)
-            # .filter(Dao.id == id_)
-            .filter_by(id=update_data.id)
-            .returning(Dao)
+            update(self.dao)
+            .values(update_dao.to_dict())
+            .filter_by(id=update_dao.id)
+            .returning(self.dao)
         )
 
         result = await self.session.execute(stmt)
@@ -44,7 +51,7 @@ class BaseDBRepository(BaseRepository[Entity], Generic[Entity, Dao]):
 
     async def get(self, id_: UUID) -> Entity | None:
         stmt = (
-            select(Dao)
+            select(self.dao)
             .filter_by(id=id_)
         )
 
@@ -54,7 +61,7 @@ class BaseDBRepository(BaseRepository[Entity], Generic[Entity, Dao]):
 
     async def get_all(self) -> Sequence[Entity]:
         stmt = (
-            select(Dao)
+            select(self.dao)
         )
 
         try:

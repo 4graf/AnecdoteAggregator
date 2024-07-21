@@ -1,13 +1,15 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Sequence
+from typing import Sequence, Generic, TypeVar
 from uuid import UUID
 
-Entity = TypeVar('Entity')
+from app.core.shared_kernel.domain.entity import BaseEntity
+
+Entity = TypeVar("Entity", bound=BaseEntity)
 
 
 class BaseRepository(ABC, Generic[Entity]):
     """
-        Абстрактный репозиторий с generic сущности
+        Абстрактный репозиторий
     """
 
     @abstractmethod

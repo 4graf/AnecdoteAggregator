@@ -1,3 +1,6 @@
+from app.core.user.domain.exceptions import MinLengthUserLoginError, MaxLengthUserLoginError
+
+
 class Login:
     def __init__(self, login: str):
         if len(login) < 8:

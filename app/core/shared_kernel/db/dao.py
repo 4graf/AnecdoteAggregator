@@ -20,3 +20,6 @@ class BaseDao(DeclarativeBase):
     @abstractmethod
     def from_entity(entity: BaseEntity) -> "BaseDao":
         ...
+
+    def to_dict(self):
+        return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}

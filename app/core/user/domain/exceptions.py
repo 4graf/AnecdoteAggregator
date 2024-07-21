@@ -2,6 +2,18 @@ class UserError(Exception):
     """Базовое исключение для пользователей"""
 
 
+class MinLengthUserLoginError(UserError):
+
+    def __init__(self, msg='User has a login less than the minimum.'):
+        super().__init__(msg)
+
+
+class MaxLengthUserLoginError(UserError):
+
+    def __init__(self, msg='User has a login greater than the maximum.'):
+        super().__init__(msg)
+
+
 class MinLengthUserFirstNameError(UserError):
 
     def __init__(self, msg='User has a first name less than the minimum.'):
