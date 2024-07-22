@@ -41,7 +41,7 @@ class AuthenticationService:
         )
         await self.user_repository.add(user)
 
-        access_token = TokenService.create_access_token({"user_id": user.uuid})
+        access_token = TokenService.create_access_token({"user_id": str(user.uuid.uuid)})
         return AuthenticationTokensSchema(access_token=access_token)
 
     async def login(self, user_login: UserLoginSchema) -> AuthenticationTokensSchema:
@@ -52,7 +52,7 @@ class AuthenticationService:
         if not PasswordService.validate_password(user_login.password, user.password_hash.password_hash):
             raise WrongPasswordError
 
-        access_token = TokenService.create_access_token({"user_id": user.uuid})
+        access_token = TokenService.create_access_token({"user_id": str(user.uuid.uuid)})
         return AuthenticationTokensSchema(access_token=access_token)
 
     async def logout(self):

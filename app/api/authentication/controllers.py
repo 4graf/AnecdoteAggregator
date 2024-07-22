@@ -12,10 +12,10 @@ from app.core.user.application.authentication.schemas.user_login_schema import U
 from app.core.user.application.authentication.services.authentication_service import AuthenticationService
 from app.core.user.application.schemas.user_create_schema import UserCreateSchema
 
-user_router = APIRouter()
+authentication_router = APIRouter()
 
 
-@user_router.post("/register", status_code=status.HTTP_201_CREATED)
+@authentication_router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_user(user: UserCreateSchema,
                         authentication_service: Annotated[AuthenticationService, Depends(get_authentication_service)],
                         response: Response) \
@@ -37,13 +37,13 @@ async def register_user(user: UserCreateSchema,
     return access_token
 
 
-@user_router.post("/register", status_code=status.HTTP_201_CREATED)
+@authentication_router.post("/login", status_code=status.HTTP_200_OK)
 async def login(user_login: UserLoginSchema,
                 authentication_service: Annotated[AuthenticationService, Depends(get_authentication_service)],
                 response: Response) \
         -> AccessTokenSchema:
     """
-    Регистрирует нового пользователя
+    Аутентифицирует пользователя
 
         :param user_login: Данные для аутентификации пользователя.
         :param authentication_service: Сервис для работы с аутентификацией.

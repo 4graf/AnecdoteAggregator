@@ -3,7 +3,7 @@ from typing import Sequence, TypeVar
 from uuid import UUID
 
 from sqlalchemy import insert, update, select
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound, IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.shared_kernel.db.dao import BaseDao
@@ -30,9 +30,12 @@ class BaseDBRepository(BaseRepository[Entity], ABC):
             .values(add_dao.to_dict())
             .returning(self.dao)
         )
-        result = await self.session.execute(stmt)
-        result = result.scalars().all()
-        await self.session.commit()
+        try:
+            result = await self.session.execute(stmt)
+            result = result.scalars().all()
+            await self.session.commit()
+        except IntegrityError:
+            raise EntityExistError
         return result[0].to_entity() if len(result) == 1 else [dao.to_entity() for dao in result]
 
     async def update(self, entity: Entity) -> Entity:
