@@ -59,6 +59,20 @@ class BaseDBRepository(BaseRepository[Entity], ABC):
         result = result.scalar_one_or_none()
         return result.to_entity() if result else None
 
+    async def get_by_filter(self, filter_map: dict) -> Sequence[Entity]:
+        stmt = (
+            select(self.dao)
+            .filter_by(**filter_map)
+        )
+
+        try:
+            result = await self.session.execute(stmt)
+            result = result.scalars().all()
+        except NoResultFound:
+            return []
+
+        return [dao.to_entity() for dao in result]
+
     async def get_all(self) -> Sequence[Entity]:
         stmt = (
             select(self.dao)

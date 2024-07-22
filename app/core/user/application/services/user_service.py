@@ -1,8 +1,8 @@
-from uuid import uuid4, UUID
+from uuid import UUID, uuid4
 
 from app.core.shared_kernel.domain.value_objects import UserUUID
+from app.core.user.application.schemas.user_create_schema import UserCreateSchema
 from app.core.user.application.schemas.user_read_schema import UserReadSchema
-from app.core.user.application.schemas.user_register_schema import UserRegisterSchema
 from app.core.user.application.schemas.user_update_schema import UserUpdateSchema
 from app.core.user.domain.exceptions import UserNotFoundError
 from app.core.user.domain.user_entity import User
@@ -21,30 +21,19 @@ class UserService:
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    async def register_user(self, data: UserRegisterSchema) -> UserReadSchema:
-        if data.name:
-            user_name = UserName(first_name=data.name.first_name,
-                                 second_name=data.name.second_name)
-        else:
-            user_name = None
-
-        user = User(
-            uuid=UserUUID(uuid4()),
-            login=Login(data.login),
-            password_hash=PasswordHash(data.password),  # ToDo: добавить хеширование
-            email=Email(data.email),
-            name=user_name
-        )
-        await self.user_repository.add(user)
-
-        return UserReadSchema.from_entity(user)
-
     async def get_user_by_id(self, id_: UUID) -> UserReadSchema:
         user = await self.user_repository.get(id_)
         if not user:
             raise UserNotFoundError
 
         return UserReadSchema.from_entity(user)
+
+    async def get_user_by_login(self, user_login: str) -> UserReadSchema:
+        users = await self.user_repository.get_by_login(user_login)
+        if not users:
+            raise UserNotFoundError
+
+        return UserReadSchema.from_entity(users[0])
 
     async def get_all_user(self) -> list[UserReadSchema]:
         users = await self.user_repository.get_all()

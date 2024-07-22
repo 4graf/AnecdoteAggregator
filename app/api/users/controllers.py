@@ -10,25 +10,10 @@ from starlette.exceptions import HTTPException
 
 from app.api.users.dependencies import get_user_service
 from app.core.user.application.schemas.user_read_schema import UserReadSchema
-from app.core.user.application.schemas.user_register_schema import UserRegisterSchema
 from app.core.user.application.services.user_service import UserService
 from app.core.user.domain.exceptions import UserNotFoundError
 
 user_router = APIRouter()
-
-
-@user_router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register_user(user: UserRegisterSchema,
-                        user_service: Annotated[UserService, Depends(get_user_service)]) \
-        -> UserReadSchema:
-    """
-    Регистрирует нового пользователя
-
-        :param user: Данные нового пользователя.
-        :param user_service: Сервис для работы с пользователями.
-        :return: Данные пользователя.
-    """
-    return await user_service.register_user(data=user)
 
 
 @user_router.get("/all", status_code=status.HTTP_200_OK)

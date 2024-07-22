@@ -17,19 +17,26 @@ class DatabaseSettings(BaseSettings):
     # redis_url: RedisDsn
 
 
-class JWTSettings(BaseSettings):
+class AuthenticationSettings(BaseSettings):
     """
-    Настройки JWT.
+    Настройки аутентификации.
 
     Attributes:
         access_secret_key: Секретный ключ для генерации токенов доступа.
         access_expiration: Время жизни токенов доступа в минутах.
         refresh_secret_key: Секретный ключ для генерации токенов обновления.
         refresh_expiration: Время жизни токенов обновления в минутах.
-        algorithm: Алгоритм кодирования токена.
+        jwt_algorithm: Алгоритм кодирования токена.
+        password_salt: Соль для хеширования пароля пользователя.
+        iters_hashing: Количество итераций для хеширования пароля пользователя.
+        hash_algorithm: Алгоритм для хеширования пароля пользователя.
     """
     access_secret_key: str
     access_expiration: int
     refresh_secret_key: str
     refresh_expiration: int
-    algorithm: str
+    jwt_algorithm: str
+    password_salt: str
+    iters_hashing: int
+    hash_algorithm: str
+

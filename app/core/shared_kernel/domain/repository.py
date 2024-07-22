@@ -25,5 +25,9 @@ class BaseRepository(ABC, Generic[Entity]):
         ...
 
     @abstractmethod
+    async def get_by_filter(self, filter_map: dict) -> Sequence[Entity]:
+        ...
+
+    @abstractmethod
     async def get_all(self) -> Sequence[Entity]:
         ...
