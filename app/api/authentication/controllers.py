@@ -4,6 +4,7 @@ API-маршруты для управления пользователями.
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response
+from fastapi.security import OAuth2PasswordRequestForm
 from starlette import status
 
 from app.api.authentication.dependencies import get_authentication_service
@@ -38,18 +39,20 @@ async def register_user(user: UserCreateSchema,
 
 
 @authentication_router.post("/login", status_code=status.HTTP_200_OK)
-async def login(user_login: UserLoginSchema,
-                authentication_service: Annotated[AuthenticationService, Depends(get_authentication_service)],
+async def login(authentication_service: Annotated[AuthenticationService, Depends(get_authentication_service)],
+                form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                 response: Response) \
         -> AccessTokenSchema:
     """
     Аутентифицирует пользователя
 
-        :param user_login: Данные для аутентификации пользователя.
         :param authentication_service: Сервис для работы с аутентификацией.
+        :param form_data: Данные для аутентификации пользователя.
         :param response: Объект ответа для установления cookies.
         :return: Данные пользователя.
     """
+    user_login = UserLoginSchema(login=form_data.username,
+                                 password=form_data.password)
     tokens = await authentication_service.login(user_login=user_login)
     # response.set_cookie(key='refresh_token',
     #                     value=tokens.refresh_token,

@@ -47,6 +47,10 @@ class AnecdoteService:
         all_anecdotes = await self.anecdote_repository.get_all()
         return [AnecdoteReadSchema.from_entity(anecdote) for anecdote in all_anecdotes]
 
+    async def get_user_anecdotes(self, user_id: UUID) -> list[AnecdoteReadSchema]:
+        anecdotes = await self.anecdote_repository.get_user_anecdotes(user_id)
+        return [AnecdoteReadSchema.from_entity(anecdote) for anecdote in anecdotes]
+
     async def update_anecdote(self, data: AnecdoteUpdateSchema) -> AnecdoteReadSchema:
         if data.author:
             anecdote_author = AnecdoteAuthor(first_name=data.author.first_name,

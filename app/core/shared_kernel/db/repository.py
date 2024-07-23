@@ -34,8 +34,9 @@ class BaseDBRepository(BaseRepository[Entity], ABC):
             result = await self.session.execute(stmt)
             result = result.scalars().all()
             await self.session.commit()
-        except IntegrityError:
-            raise EntityExistError
+        except IntegrityError as e:
+            # raise EntityExistError from e
+            raise e
         return result[0].to_entity() if len(result) == 1 else [dao.to_entity() for dao in result]
 
     async def update(self, entity: Entity) -> Entity:
