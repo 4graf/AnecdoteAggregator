@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:16.0-alpine
+    container_name: postgres
+    restart: always
+    command: -p ${POSTGRES_PORT}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -p ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} || 1" ]
+      interval: 10s
+      timeout: 5s
+      start_period: 5s
+    env_file:
+      - .env
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:${APP_PORT}/api/v1/healthcheck || 1" ]
+      interval: 20s
+      timeout: 5s
+      start_period: 10s
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - '127.0.0.1:${APP_PORT}:${APP_PORT}'
+
+volumes:
+  postgres_data:
