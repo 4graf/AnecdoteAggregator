@@ -63,5 +63,17 @@ class AuthenticationService:
         #  ToDo: Добавить Redis и вести учёт деактивированных токенов
         ...
 
-    async def refresh(self):
-        ...
+    async def refresh(self, refresh_token: str) -> AuthenticationTokensSchema:
+        user_data = TokenService.decode_refresh_token(refresh_token)
+
+        #  ToDo: удаление всего семейства старых токенов
+
+        if not await self.user_repository.get(user_data.uuid):
+            raise UserNotFoundError
+
+        user_to_token = UserToTokenSchema(uuid=str(user_data.uuid))
+        new_access_token = TokenService.create_access_token(user_to_token)
+        new_refresh_token = TokenService.create_refresh_token(user_to_token)
+
+        return AuthenticationTokensSchema(access_token=new_access_token,
+                                          refresh_token=new_refresh_token)

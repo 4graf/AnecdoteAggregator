@@ -4,5 +4,5 @@ from app.core.user.application.authentication.schemas.token_payload_schema impor
 
 
 class RefreshTokenSchema(BaseModel):
-    token: TokenPayloadSchema
+    refresh_token: TokenPayloadSchema
     token_type: str
