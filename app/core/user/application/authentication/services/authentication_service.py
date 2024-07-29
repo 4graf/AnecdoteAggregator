@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from app.core.shared_kernel.db.exceptions import EntityExistsError
 from app.core.shared_kernel.domain.value_objects import UserUUID
 from app.core.user.application.authentication.exceptions import WrongPasswordError
 from app.core.user.application.authentication.schemas.authentication_tokens_schema import AuthenticationTokensSchema
@@ -8,7 +9,7 @@ from app.core.user.application.authentication.schemas.user_to_token_schema impor
 from app.core.user.application.authentication.services.password_service import PasswordService
 from app.core.user.application.authentication.services.token_service import TokenService
 from app.core.user.application.schemas.user_create_schema import UserCreateSchema
-from app.core.user.domain.exceptions import UserNotFoundError
+from app.core.user.domain.exceptions import UserNotFoundError, UserExistsError
 from app.core.user.domain.user_entity import User
 from app.core.user.domain.user_repository import UserRepository
 from app.core.user.domain.value_object.email import Email
@@ -34,18 +35,23 @@ class AuthenticationService:
         else:
             user_name = None
 
-        user = User(
-            uuid=UserUUID(uuid4()),
-            login=Login(data.login),
-            password_hash=PasswordHash(PasswordService.hash_password(data.password)),
-            email=Email(data.email),
-            name=user_name
-        )
-        await self.user_repository.add(user)
+        try:
+            user = User(
+                uuid=UserUUID(uuid4()),
+                login=Login(data.login),
+                password_hash=PasswordHash(PasswordService.hash_password(data.password)),
+                email=Email(data.email),
+                name=user_name
+            )
+            await self.user_repository.add(user)
+        except EntityExistsError as e:
+            raise UserExistsError from e
 
         user_to_token = UserToTokenSchema(uuid=str(user.uuid.uuid))
         access_token = TokenService.create_access_token(user_to_token)
-        return AuthenticationTokensSchema(access_token=access_token)
+        refresh_token = TokenService.create_refresh_token(user_to_token)
+        return AuthenticationTokensSchema(access_token=access_token,
+                                          refresh_token=refresh_token)
 
     async def login(self, user_login: UserLoginSchema) -> AuthenticationTokensSchema:
         users = await self.user_repository.get_by_login(user_login.login)
@@ -57,7 +63,9 @@ class AuthenticationService:
 
         user_to_token = UserToTokenSchema(uuid=str(user.uuid.uuid))
         access_token = TokenService.create_access_token(user_to_token)
-        return AuthenticationTokensSchema(access_token=access_token)
+        refresh_token = TokenService.create_refresh_token(user_to_token)
+        return AuthenticationTokensSchema(access_token=access_token,
+                                          refresh_token=refresh_token)
 
     async def logout(self):
         #  ToDo: Добавить Redis и вести учёт деактивированных токенов

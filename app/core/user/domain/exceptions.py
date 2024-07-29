@@ -48,3 +48,9 @@ class UserNotFoundError(UserError):
 
     def __init__(self, msg='User not found.'):
         super().__init__(msg)
+
+
+class UserExistsError(UserError):
+
+    def __init__(self, msg='User already exists.'):
+        super().__init__(msg)

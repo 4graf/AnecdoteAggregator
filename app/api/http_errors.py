@@ -23,3 +23,7 @@ class AuthenticationUserError(HTTPException):
                          detail={"message": f"{msg}: {exception_msg}"})
 
 
+class ResourceExistsError(HTTPException):
+    def __init__(self, msg='Resource already exists.', exception_msg=''):
+        super().__init__(status_code=status.HTTP_409_CONFLICT,
+                         detail={"message": f"{msg}: {exception_msg}"})

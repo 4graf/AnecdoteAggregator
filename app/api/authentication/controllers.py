@@ -8,13 +8,15 @@ from fastapi.security import OAuth2PasswordRequestForm
 from starlette import status
 
 from app.api.authentication.dependencies import get_authentication_service
-from app.api.http_errors import ResourceNotFoundByIDError, AuthenticationUserError, RequestParamValidationError
+from app.api.http_errors import ResourceNotFoundByIDError, AuthenticationUserError, RequestParamValidationError, \
+    ResourceExistsError
+from app.core.shared_kernel.db.exceptions import EntityExistsError
 from app.core.user.application.authentication.exceptions import AuthenticationError
 from app.core.user.application.authentication.schemas.access_token_schema import AccessTokenSchema
 from app.core.user.application.authentication.schemas.user_login_schema import UserLoginSchema
 from app.core.user.application.authentication.services.authentication_service import AuthenticationService
 from app.core.user.application.schemas.user_create_schema import UserCreateSchema
-from app.core.user.domain.exceptions import UserNotFoundError, UserError
+from app.core.user.domain.exceptions import UserNotFoundError, UserError, UserExistsError
 
 authentication_router = APIRouter()
 
@@ -34,6 +36,8 @@ async def register_user(user: UserCreateSchema,
     """
     try:
         tokens = await authentication_service.register_user(data=user)
+    except UserExistsError as e:
+        raise ResourceExistsError(exception_msg=str(e)) from e
     except UserError as e:
         raise RequestParamValidationError(exception_msg=str(e)) from e
 

@@ -9,7 +9,7 @@ from app.core.anecdote.domain.exceptions import AnecdoteNotFoundError
 from app.core.anecdote.domain.value_objects.anecdote_author import AnecdoteAuthor
 from app.core.anecdote.domain.value_objects.anecdote_text import AnecdoteText
 from app.core.anecdote.domain.value_objects.likes_count import LikesCount
-from app.core.shared_kernel.db.exceptions import EntityExistError
+from app.core.shared_kernel.db.exceptions import EntityExistsError
 from app.core.shared_kernel.domain.value_objects import AnecdoteUUID, UserUUID
 
 
