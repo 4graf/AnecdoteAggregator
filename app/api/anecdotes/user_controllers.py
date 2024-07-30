@@ -5,13 +5,11 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from starlette import status
-from starlette.exceptions import HTTPException
 
 from app.api.anecdotes.dependencies import get_anecdote_service
 from app.api.shared_dependencies import get_current_user
 from app.core.anecdote.application.schemas.anecdote_read_schema import AnecdoteReadSchema
 from app.core.anecdote.application.services.anecdote_service import AnecdoteService
-from app.core.user.application.authentication.exceptions import AuthenticationError
 from app.core.user.application.authentication.schemas.user_from_token_schema import UserFromTokenSchema
 
 anecdote_user_router = APIRouter()
@@ -28,8 +26,4 @@ async def get_user_anecdotes(anecdote_service: Annotated[AnecdoteService, Depend
         :param current_user: Данные текущего пользователя.
         :return: Данные анекдотов.
     """
-    try:
-        return await anecdote_service.get_user_anecdotes(current_user.uuid)
-    except AuthenticationError as e:
-        raise HTTPException from e  # ToDo: сделать мапер ошибок
-
+    return await anecdote_service.get_user_anecdotes(current_user.uuid)

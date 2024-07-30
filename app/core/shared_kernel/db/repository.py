@@ -7,6 +7,7 @@ from sqlalchemy.exc import NoResultFound, IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.shared_kernel.db.dao import BaseDao
+from app.core.shared_kernel.db.exceptions import EntityExistsError
 from app.core.shared_kernel.domain.entity import BaseEntity
 from app.core.shared_kernel.domain.repository import BaseRepository
 
@@ -35,8 +36,7 @@ class BaseDBRepository(BaseRepository[Entity], ABC):
             result = result.scalars().all()
             await self.session.commit()
         except IntegrityError as e:
-            # raise EntityExistError from e
-            raise e
+            raise EntityExistsError from e
         return result[0].to_entity() if len(result) == 1 else [dao.to_entity() for dao in result]
 
     async def update(self, entity: Entity) -> Entity:
